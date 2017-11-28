@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.proxy.pool.dao.ProxyMapper" >
+  <resultMap id="BaseResultMap" type="com.proxy.pool.model.Proxy" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="ip" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="port" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="types" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="protocol" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="country" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="area" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="updatetime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="speed" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="score" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, ip, port, types, protocol, country, area, updatetime, speed, score
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from proxies
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from proxies
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.proxy.pool.model.Proxy" >
+    insert into proxies (id, ip, port, 
+      types, protocol, country, 
+      area, updatetime, speed, 
+      score)
+    values (#{id,jdbcType=INTEGER}, #{ip,jdbcType=VARCHAR}, #{port,jdbcType=INTEGER}, 
+      #{types,jdbcType=INTEGER}, #{protocol,jdbcType=INTEGER}, #{country,jdbcType=VARCHAR}, 
+      #{area,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP}, #{speed,jdbcType=DECIMAL}, 
+      #{score,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.proxy.pool.model.Proxy" >
+    insert into proxies
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="ip != null" >
+        ip,
+      </if>
+      <if test="port != null" >
+        port,
+      </if>
+      <if test="types != null" >
+        types,
+      </if>
+      <if test="protocol != null" >
+        protocol,
+      </if>
+      <if test="country != null" >
+        country,
+      </if>
+      <if test="area != null" >
+        area,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="speed != null" >
+        speed,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null" >
+        #{port,jdbcType=INTEGER},
+      </if>
+      <if test="types != null" >
+        #{types,jdbcType=INTEGER},
+      </if>
+      <if test="protocol != null" >
+        #{protocol,jdbcType=INTEGER},
+      </if>
+      <if test="country != null" >
+        #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="speed != null" >
+        #{speed,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.proxy.pool.model.Proxy" >
+    update proxies
+    <set >
+      <if test="ip != null" >
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null" >
+        port = #{port,jdbcType=INTEGER},
+      </if>
+      <if test="types != null" >
+        types = #{types,jdbcType=INTEGER},
+      </if>
+      <if test="protocol != null" >
+        protocol = #{protocol,jdbcType=INTEGER},
+      </if>
+      <if test="country != null" >
+        country = #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="speed != null" >
+        speed = #{speed,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.proxy.pool.model.Proxy" >
+    update proxies
+    set ip = #{ip,jdbcType=VARCHAR},
+      port = #{port,jdbcType=INTEGER},
+      types = #{types,jdbcType=INTEGER},
+      protocol = #{protocol,jdbcType=INTEGER},
+      country = #{country,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      speed = #{speed,jdbcType=DECIMAL},
+      score = #{score,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
