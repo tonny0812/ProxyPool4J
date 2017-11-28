@@ -13,6 +13,15 @@ File Encoding         : 65001
 Date: 2017-11-28 21:48:18
 */
 
+/*
+Name	Type	Description
+types	int	0: 高匿,1:匿名,2 透明
+protocol	int	0: http, 1 https, 2 http/https
+country	str	取值为 国内, 国外
+area	str	地区
+*/
+
+
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
