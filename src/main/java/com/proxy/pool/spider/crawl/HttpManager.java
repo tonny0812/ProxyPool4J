@@ -1,6 +1,7 @@
 package com.proxy.pool.spider.crawl;
 
 import com.proxy.pool.spider.BD.PageBD;
+import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.AuthSchemes;
@@ -44,6 +45,10 @@ public class HttpManager {
      * 全局连接池对象
      */
     private static PoolingHttpClientConnectionManager connManager = null;
+
+    public static PoolingHttpClientConnectionManager getConnManager() {
+        return connManager;
+    }
 
     /**
      * 配置连接池信息，支持http/https
@@ -211,8 +216,19 @@ public class HttpManager {
             response = client.execute(request, httpClientContext);
 
             int statusCode = response.getStatusLine().getStatusCode();// 连接代码
-
             if (statusCode == 200) {
+                Header[] forwordArr = response.getHeaders("X-Forwarded-For" );
+                Header[] realArr = response.getHeaders("'X-Real-Ip" );
+                if(forwordArr.length > 0 ) {
+                    for(Header h : forwordArr) {
+                        System.out.println("------->>" + h.toString());
+                    }
+                }
+                if(realArr.length > 0 ) {
+                    for(Header h : realArr) {
+                        System.out.println("-------@@" + h.toString());
+                    }
+                }
 
                 return true;
             }
@@ -251,5 +267,10 @@ public class HttpManager {
         }
 
         return page;
+    }
+
+    public static void main(String[] args) {
+        HttpHost httpHost = new HttpHost("118.193.107.96", 80 , "http");
+        HttpManager.get().checkProxy(httpHost);
     }
 }

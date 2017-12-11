@@ -56,7 +56,7 @@ public class ProxyManager {
                                 String protocol = proxy.getProtocol() == 1 ? "http":"https";
                                 HttpHost httpHost = new HttpHost(proxy.getIp(), proxy.getPort(), protocol);
                                 boolean flag = HttpManager.get().checkProxy(httpHost);
-                                logger.info("--------------------------->>>>>> Proxy = "+ proxy.toString() + " : " + flag);
+//                                logger.info("--------------------------->>>>>> Proxy = "+ proxy.toString() + " : " + flag);
                                 return flag;
                             }
                         }).collect(Collectors.toList());

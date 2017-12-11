@@ -75,6 +75,10 @@ public class ProxyPageCallable implements Callable<List<ProxyBD>>{
             if(!CollectionUtils.isEmpty(proxyList)) {
                 for(ProxyBD p : proxyList){
                     if (!SitePool.proxyList.contains(p)) {
+                        p.setArea("222");
+                        p.setCountry("111");
+                        p.setTypes(0);
+                        p.setSpeed(0);
                         result.add(p);
                     }
                 }
