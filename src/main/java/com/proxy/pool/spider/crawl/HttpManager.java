@@ -1,7 +1,10 @@
 package com.proxy.pool.spider.crawl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.proxy.pool.manager.ScheduleManager;
 import com.proxy.pool.spider.BD.PageBD;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.AuthSchemes;
@@ -23,6 +26,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 
 import javax.net.ssl.SSLContext;
@@ -50,6 +54,7 @@ public class HttpManager {
         return connManager;
     }
 
+    public static String selfIP;
     /**
      * 配置连接池信息，支持http/https
      */
@@ -98,6 +103,44 @@ public class HttpManager {
     }
 
     private HttpManager() {
+        // 创建Http请求配置参数
+        RequestConfig.Builder builder = RequestConfig.custom()
+                // 获取连接超时时间
+                .setConnectionRequestTimeout(20000)
+                // 请求超时时间
+                .setConnectTimeout(20000)
+                // 响应超时时间
+                .setSocketTimeout(20000);
+
+        RequestConfig requestConfig = builder.build();
+
+        // 创建httpClient
+        HttpClientBuilder httpClientBuilder = HttpClients.custom();
+
+        httpClientBuilder
+                // 把请求相关的超时信息设置到连接客户端
+                .setDefaultRequestConfig(requestConfig)
+                // 配置连接池管理对象
+                .setConnectionManager(connManager);
+
+        CloseableHttpClient client =  httpClientBuilder.build();
+        HttpClientContext httpClientContext = HttpClientContext.create();
+        CloseableHttpResponse response = null;
+        try {
+            HttpGet request = new HttpGet(ScheduleManager.TEST_IP);
+            request.setHeaders(getHeaders());
+            response = client.execute(request, httpClientContext);
+            int statusCode = response.getStatusLine().getStatusCode();// 连接代码
+            if(200 == statusCode) {
+                String content = EntityUtils.toString(response.getEntity(),"UTF-8");
+                System.out.println(content);
+                JSONObject json = JSONObject.parseObject(content);
+                selfIP = json.getString("origin");
+                System.out.println("SelfIP:"+selfIP);
+            }
+        } catch (IOException e) {
+
+        }
     }
 
     public static HttpManager get() {
@@ -182,6 +225,16 @@ public class HttpManager {
         return response;
     }
 
+    public static Header[] getHeaders() {
+        Header[] headers = new BasicHeader[5];
+        headers[0] = new BasicHeader("User-Agent", Constant.userAgentArray[new Random().nextInt(Constant.userAgentArray.length)]);
+        headers[1] = new BasicHeader("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        headers[2] = new BasicHeader("Accept-Language","en-US,en;q=0.5");
+        headers[3] = new BasicHeader("Connection","keep-alive");
+        headers[4] = new BasicHeader("Accept-Encoding","gzip, deflate");
+        return headers;
+    }
+
     public boolean checkProxy(HttpHost proxy) {
 
         if (proxy == null) return false;
@@ -208,17 +261,23 @@ public class HttpManager {
                 .setConnectionManager(connManager);
 
         CloseableHttpClient client =  httpClientBuilder.build();
-
         HttpClientContext httpClientContext = HttpClientContext.create();
         CloseableHttpResponse response = null;
+        String testUrl = proxy.getSchemeName().equalsIgnoreCase("http") ? ScheduleManager.TEST_HTTP_HEADER  : ScheduleManager.TEST_HTTPS_HEADER;
         try {
-            HttpGet request = new HttpGet("http://www.163.com/");
+//            System.out.println("Test URL:" + testUrl);
+            HttpGet request = new HttpGet(testUrl);
+            request.setHeaders(getHeaders());
             response = client.execute(request, httpClientContext);
-
             int statusCode = response.getStatusLine().getStatusCode();// 连接代码
             if (statusCode == 200) {
+                JSONObject json = JSONObject.parseObject(EntityUtils.toString(response.getEntity(),"UTF-8"));
+                String origin = json.getString("origin");
+                if(origin.indexOf(selfIP) > 0 || origin.indexOf(",") > 0) {
+                    return false;
+                }
                 Header[] forwordArr = response.getHeaders("X-Forwarded-For" );
-                Header[] realArr = response.getHeaders("'X-Real-Ip" );
+                Header[] realArr = response.getHeaders("X-Real-Ip");
                 if(forwordArr.length > 0 ) {
                     for(Header h : forwordArr) {
                         System.out.println("------->>" + h.toString());
@@ -229,7 +288,6 @@ public class HttpManager {
                         System.out.println("-------@@" + h.toString());
                     }
                 }
-
                 return true;
             }
         } catch (IOException e) {

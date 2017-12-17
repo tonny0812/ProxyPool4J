@@ -1,7 +1,7 @@
 package com.proxy.pool.spider.BD;
 
 public class ProxyStatus {
-    private boolean useable;
+    private boolean useable = false;
     private Integer types = -1;
     private Integer speed = -1;
 

@@ -8,10 +8,10 @@ protocol	int	0: http, 1 https, 2 http/https
 country	str	取值为 国内, 国外
 area	str	地区
 * */
-public class ProxyBD {
+public class ProxyBD implements Comparable{
 
     private String ip;
-    private int port;
+    private Integer port;
     private Integer types;
     private Integer protocol;
     private Integer speed;
@@ -30,7 +30,7 @@ public class ProxyBD {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 
@@ -90,6 +90,20 @@ public class ProxyBD {
                 ", country='" + country + '\'' +
                 ", area='" + area + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        ProxyBD p = (ProxyBD) obj;
+        if(this.getIp().equals(p.getIp()) && this.getPort() == p.getPort()) {
+            return true;
+        }
+        return false;
     }
 }
 

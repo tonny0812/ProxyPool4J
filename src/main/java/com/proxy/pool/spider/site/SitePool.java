@@ -2,7 +2,7 @@ package com.proxy.pool.spider.site;
 
 
 import com.proxy.pool.spider.BD.ProxyBD;
-import com.proxy.pool.spider.parser.Ip181ProxyListPageParser;
+import com.proxy.pool.spider.parser.XicidailiProxyListPageParser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ public class SitePool {
     static {
         int pages = 2;
         for(int i = 1; i <= pages; i++){
-            siteMap.put("http://www.ip181.com/daili/" + i + ".html", Ip181ProxyListPageParser.class);
+            siteMap.put("http://www.xicidaili.com/wt/" + i + ".html", XicidailiProxyListPageParser.class);
         }
     }
 }
