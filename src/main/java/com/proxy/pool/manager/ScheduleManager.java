@@ -15,16 +15,22 @@ public class ScheduleManager {
     public static final String TEST_HTTP_HEADER = "http://httpbin.org/get";
     public static final String TEST_HTTPS_HEADER = "https://httpbin.org/get";
     public static final String TEST_IP = "http://httpbin.org/ip";
+
     public static void main(String[] args) {
                  //创建大小为10的 BlockingQueue
                  BlockingQueue<ProxyBD> queue1 = new PriorityBlockingQueue<ProxyBD>();
                  BlockingQueue<ProxyBD> queue2 = new PriorityBlockingQueue<ProxyBD>();
                  CrawlerProducer producer = new CrawlerProducer(queue1, "http://www.xicidaili.com/wt/1.html");
+                 CrawlerProducer producer2 = new CrawlerProducer(queue1, "http://www.xicidaili.com/nn/1.html");
                  CheckValidatorConsumer consumer = new CheckValidatorConsumer(queue1,queue2);
                  //开启 producer线程向队列中生产消息
                  new Thread(producer).start();
+                 new Thread(producer2).start();
                  //开启 consumer线程 中队列中消费消息
-                 new Thread(consumer).start();
+                for(int i=0;i<100;i++) {
+                    new Thread(consumer, "--->"+i).start();
+                }
+
                  System.out.println("Producer and Consumer has been started");
              }
 }

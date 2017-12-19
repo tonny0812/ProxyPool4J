@@ -25,7 +25,7 @@ public class CheckValidatorConsumer implements Runnable{
                      Thread.sleep(10000);
                  }else {
                      while(!resourceQueue.isEmpty()){
-                         System.out.println("Queue's length:"+ resourceQueue.size());
+                         System.out.println(Thread.currentThread().getName() + " Queue's length:"+ resourceQueue.size());
                          proxy = resourceQueue.take();
                          ProxyStatus status = Validator.checkHttpProxy(HttpManager.selfIP, proxy, true);
                          if(status.isUseable()) {

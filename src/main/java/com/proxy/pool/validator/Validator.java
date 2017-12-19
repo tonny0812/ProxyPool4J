@@ -15,6 +15,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 
@@ -56,22 +57,28 @@ public class Validator {
             response = client.execute(request, httpClientContext);
             int statusCode = response.getStatusLine().getStatusCode();// 连接代码
             if (statusCode == 200) {
-                JSONObject json = JSONObject.parseObject(EntityUtils.toString(response.getEntity(),"UTF-8"));
-                String origin = json.getString("origin");
-                Header[] forwordArr = response.getHeaders("X-Forwarded-For" );
-                Header[] realArr = response.getHeaders("X-Real-Ip");
-                if(origin.indexOf(HttpManager.selfIP) > 0 || origin.indexOf(",") > 0) {
-                    return proxyStatus;
-                } else if(forwordArr.length == 0 && realArr.length == 0) {
-                    proxyStatus.setTypes(0);
-                } else {
-                    proxyStatus.setTypes(2);
+                String str = EntityUtils.toString(response.getEntity(),"UTF-8");
+                if(!StringUtils.isEmpty(str)) {
+                    JSONObject json = JSONObject.parseObject(str);
+                    String origin = json.getString("origin");
+                    System.out.println(origin);
+                    Header[] forwordArr = response.getHeaders("X-Forwarded-For" );
+                    Header[] realArr = response.getHeaders("X-Real-Ip");
+                    if(origin.indexOf(HttpManager.selfIP) > -1 || origin.indexOf(",") > -1) {
+                        proxyStatus.setUseable(false);
+                        return proxyStatus;
+                    } else if(forwordArr.length == 0 && realArr.length == 0) {
+                        proxyStatus.setUseable(true);
+                        proxyStatus.setTypes(0);
+                    } else {
+                        proxyStatus.setUseable(true);
+                        proxyStatus.setTypes(2);
+                    }
                 }
             }
         } catch (IOException e) {
 //            e.printStackTrace();
         }
-
         return proxyStatus;
     }
 }
