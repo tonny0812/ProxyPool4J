@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ProxyPool4J.iml" filepath="$PROJECT_DIR$/ProxyPool4J.iml" />
+      <module fileurl="file://$PROJECT_DIR$/proxypool-server/proxypool-server.iml" filepath="$PROJECT_DIR$/proxypool-server/proxypool-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/proxypool-web/proxypool-web.iml" filepath="$PROJECT_DIR$/proxypool-web/proxypool-web.iml" />
     </modules>
   </component>
 </project>

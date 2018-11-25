@@ -6,11 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ProxyPool4J" />
+        <module name="proxypool-server" />
+        <module name="proxypool-web" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="ProxyPool4J" target="1.8" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="proxypool-server" target="1.8" />
+      <module name="proxypool-web" target="1.8" />
+      <module name="ProxyPool4J" target="1.6" />
     </bytecodeTargetLevel>
   </component>
 </project>
