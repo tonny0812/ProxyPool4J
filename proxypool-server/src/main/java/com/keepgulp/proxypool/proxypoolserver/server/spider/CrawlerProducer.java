@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class CrawlerProducer implements Runnable {
@@ -40,6 +41,11 @@ public class CrawlerProducer implements Runnable {
 
         for(final Iterator<String> iterator = urls.iterator(); iterator.hasNext();) {
             executorService.execute(new Crawler(iterator.next()));
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
     }

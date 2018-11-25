@@ -4,7 +4,10 @@ import com.keepgulp.proxypool.proxypoolserver.server.spider.BD.ProxyBD;
 import com.keepgulp.proxypool.proxypoolserver.server.spider.CheckValidatorConsumer;
 import com.keepgulp.proxypool.proxypoolserver.server.spider.CrawlerProducer;
 import com.keepgulp.proxypool.proxypoolserver.server.spider.site.SitePool;
+import com.keepgulp.proxypool.proxypoolserver.server.storage.ProxyStorageTask;
+import com.keepgulp.proxypool.proxypoolserver.service.ProxyService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -19,6 +22,9 @@ import static com.keepgulp.proxypool.proxypoolserver.server.Config.crawleProxyTh
 @Slf4j
 @Component
 public class ScheduleManager implements ApplicationRunner {
+
+    @Autowired
+    private ProxyService proxyService;
 
     public static Set<ProxyBD> set = new HashSet<ProxyBD>();
 
@@ -40,6 +46,11 @@ public class ScheduleManager implements ApplicationRunner {
         //开启 consumer线程 中队列中消费消息
         new Thread(consumer, "Check-Proxy1").start();
         new Thread(consumer, "Check-Proxy2").start();
+
+        ProxyStorageTask proxyStorageTask = new ProxyStorageTask(checkWaitingOldQueue, proxyService);
+
+        new Thread(proxyStorageTask, "Storage").start();
+
         log.info("Producer and Consumer has been started");
 
     }
